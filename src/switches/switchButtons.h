@@ -6,7 +6,10 @@
 /**
  * @brief Represents a two button switch
  *
- * The constructor defines two pins that are conected to hardware buttons. One is the on button and one is the off button. When pressed short the button switches teh light on or off. When pressed long, the brighntess will increase or decrease.
+ * The constructor defines two pins that are conected to hardware buttons. One 
+ * is the on button and one is the off button. When pressed short the button 
+ * switches teh light on or off. When pressed long, the brighntess will increase
+ *  or decrease.
  *
  * @param onPin the GPIO pin that is connected to the on button
  * @param offPin the GPIO pin that is connected to the off button
@@ -24,8 +27,6 @@ public:
     bool onPressedLong();
     bool offPressed();
     bool offPressedLong();
-
 };
-
 
 #endif

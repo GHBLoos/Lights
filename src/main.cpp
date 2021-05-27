@@ -38,6 +38,8 @@ light alights[10];
 switchButtons switchButton(4, 5);
 
 std::vector<light> vlight;
+std::vector<RgbwColor> vpixels;
+
 
 //
 state lights[10];
@@ -521,7 +523,11 @@ void lightEngine()
     delay(6);
     inTransition = false;
   }
-  else if (hwSwitch == true)
+}
+
+void handleSwitches()
+{
+  if (hwSwitch == true)
   {
     for (int light = 0; light < lightsCount; light++)
     {
@@ -555,6 +561,7 @@ void lightEngine()
     }
   }
 }
+
 void saveState()
 {
   DynamicJsonDocument json(1024);
@@ -1175,6 +1182,7 @@ void loop()
   if (!entertainmentRun)
   {
     lightEngine();
+    handleSwitches();
   }
   else
   {

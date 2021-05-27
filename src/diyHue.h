@@ -2,6 +2,7 @@
 #define _diyhue_H_
 #include <Arduino.h>
 
+#include <NeoPixelBus.h>
 
 enum Led {
     kLedCCT = 2,
@@ -19,6 +20,7 @@ struct currentledRGBW {
   float colors[kLedRGBW];
   float stepLevel[kLedRGBW];
 };
+
 
 
 #endif

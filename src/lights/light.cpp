@@ -10,6 +10,40 @@ light::~light() // destructor
 {
 }
 
+RgbwColor light::convFloat(float color[4])
+{
+    return RgbwColor((uint8_t)color[0], (uint8_t)color[1], (uint8_t)color[2], (uint8_t)color[3]);
+}
+
+void light::lightEngine()
+{
+    {
+
+        if (light_state_) //als licht aan staat
+        {
+            if (led_.colors[0] != current_led_.colors[0] || led_.colors[1] != current_led_.colors[1] || led_.colors[2] != current_led_.colors[2] || led_.colors[3] != current_led_.colors[3])
+            {
+                in_transition_ = true;          //in transition betekent dat de huidige kleur afwijkt van de eindkleur van één van de kleuren van de lamp.
+                for (uint8_t k = 0; k < 4; k++) //voor elke led kleur (RGBW)
+                {
+                    if (led_.colors[k] != current_led_.colors[k]) // als de eindkleur nog niet de huidige kleur is,
+                        current_led_.colors[k] += step_level_[k]; // dan de kleur een stapje wijzigen
+                    if ((step_level_[k] > 0.0 && current_led_.colors[k] > led_.colors[k]) || (step_level_[k] < 0.0 && current_led_.colors[k] < led_.colors[k]))
+                        current_led_.colors[k] = led_.colors[k]; // als de huidige kleur voorbij de eindkleur komt, dan is de huidige kleur de eindkleur
+                }
+
+                // strip->ClearTo(convFloat(current_led_.colors), 0, pixel_count_ - 1);
+                // strip->Show();
+            }
+        }
+
+        if (in_transition_)
+        {
+            delay(6);
+            in_transition_ = false;
+        }
+    }
+}
 void light::convertHue()
 {
     colors_[3] = 0;
@@ -149,7 +183,7 @@ void light::convertCt()
 void light::processLightdata(float transition_time_)
 {
     //deze functie wordt aangeroepen als er iets verandert via een webserver instructie en nadat de entertainment is uitgezet.
-    //Het lijkt alsof stap 1 en 2 niets met elkaar te maken hebben. Toch worden ze altijd beiden doorlopen. 
+    //Het lijkt alsof stap 1 en 2 niets met elkaar te maken hebben. Toch worden ze altijd beiden doorlopen.
     //1. kleuren die de lampen moeten aannemer worden bepaald met de stappen hieronder
     if (color_mode_ == 1 && light_state_ == true)
     {
@@ -204,9 +238,9 @@ void light::hue(int hue) { hue_ = hue; }
 
 // void light::stepLevel(float steplevel[4]) { step_level_ = steplevel; }
 
-currentledRGBW light::currentColors() { return current_led_colors_; }
+currentledRGBW light::currentColors(){return current_led_;}
 
-void light::currentColors(currentledRGBW currentcolors) { current_led_colors_ = currentcolors; }
+void light::currentColors(currentledRGBW currentcolors) { current_led_ = currentcolors; }
 
 float light::x() { return x_; }
 void light::x(float x) { x_ = x; }
